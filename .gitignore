@@ -1,0 +1,12 @@
+# GCC build artifacts
+*.o
+*.d
+*.i
+*.ii
+*.s~
+*.out
+a.out
+
+# Executables created by this project's Makefile
+/Powers
+/power
