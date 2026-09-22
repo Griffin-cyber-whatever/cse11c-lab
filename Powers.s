@@ -9,8 +9,8 @@
 # }
 
 
-  .extern printf
-  .extern scanf
+.extern printf
+.extern scanf
 
 .section .rodata
 prompt_exp:
