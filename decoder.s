@@ -1,5 +1,5 @@
 
-.include "final.s"
+.include "abc_sorted.s"	# test ask for abc_sorted.s but final.s passed
 .extern printf
 
 .section .data
@@ -38,6 +38,8 @@ print:
 	movq %rsp, %rbp
 	# key: these partial registers literally share the same physcial storage space inside the CPU, so by obtaining %rdi, we automatically obtain %dh, %dil also
 	# print char several times. %r12b is char, %r13b is times
+	pushq %r12	# they r callee saved
+	pushq %r13
 	movq (%rdi), %r12
 	movq 1(%rdi), %r13
 
@@ -51,7 +53,8 @@ loop:
 	cmp $0, %r13b
 	jg loop	 
 
-	movq %rbp, %rsp
+	popq %r13
+	popq %r12
 	popq %rbp
 	ret
 
@@ -65,7 +68,9 @@ decode:
 	movq %rdi, initial(%rip)
 continue:
 	pushq %rdi
+	subq $8, %rsp	# %rsp must be 16-byte aligned immediately before every call
 	call print
+	addq $8, %rsp
 	popq %rdi	
 	# In x86-64 architecture, any instruction that writes to a 32-bit register (like %edi) automatically clears the upper 32 bits of the corresponding 64-bit register to zero.
 	movq initial, %rdx	# load initial address to %rdx

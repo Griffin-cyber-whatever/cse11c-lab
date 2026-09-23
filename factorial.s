@@ -34,11 +34,12 @@ factorial:
   cmpq $1, %rdi
   jle base_case
   # %rdi is caller-saved
-  pushq %rdi
+  subq $16, %rsp # %rsp must be 16-byte aligned immediately before every call
+  movq %rdi, -8(%rbp)
   dec %rdi
   # call factorial(n-1), and result is %rax
   call factorial
-  popq %rdi
+  movq -8(%rbp), %rdi
   mulq %rdi
   jmp epilogue
 
@@ -46,8 +47,7 @@ base_case:
   movq $1, %rax
 
 epilogue:
-  movq %rbp, %rsp
-  popq %rbp
+  leave
   ret
 
 main:
